@@ -19,6 +19,7 @@ async function run() {
     try{
         await client.connect();
         const toolCollection = client.db('toolShop').collection('tool');
+        const orderCollection = client.db('toolShop').collection('orders');
 
 
 
@@ -37,6 +38,14 @@ async function run() {
             const tool = await toolCollection.findOne(query)
             res.send(tool);
         })
+
+        // Orders API
+        app.post('/orders', async (req, res) => {
+            const order = req.body;
+            const result = await orderCollection.insertOne(order)
+            res.send(result)
+        });
+
 
 
 
