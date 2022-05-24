@@ -36,6 +36,14 @@ async function run() {
             res.send(tools);
         })
 
+        // ORDER GET
+        app.get('/orders', async (req, res) => {
+            const query = {};
+            const cursor = orderCollection.find(query);
+            const order = await cursor.toArray();
+            res.send(order);
+        })
+
 
 
         app.get('/tool/:id', async (req, res) => {
@@ -45,7 +53,7 @@ async function run() {
             res.send(tool);
         })
 
-        // Orders API
+        // Orders post API
         app.post('/orders', async (req, res) => {
             const order = req.body;
             const result = await orderCollection.insertOne(order)
