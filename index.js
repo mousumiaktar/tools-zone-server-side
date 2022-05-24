@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const jwt = require('jsonwebtoken');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
 
@@ -19,7 +20,12 @@ async function run() {
     try{
         await client.connect();
         const toolCollection = client.db('toolShop').collection('tool');
+
+        // order
         const orderCollection = client.db('toolShop').collection('orders');
+
+        // user
+        const userCollection = client.db('toolShop').collection('users');
 
 
 
@@ -46,6 +52,21 @@ async function run() {
             res.send(result)
         });
 
+
+
+        // user
+        app.put('/user/:email', async (req, res) => {
+            const email = req.params.email;
+            const user = req.body;
+            const filter = { email: email };
+            const options = { upsert: true };
+            const updateDoc = {
+              $set: user,
+            };
+            const result = await userCollection.updateOne(filter, updateDoc, options);
+            const token = jwt.sign({ email: email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '12h' })
+            res.send({ result, token });
+          })
 
 
 
