@@ -93,6 +93,14 @@ async function run() {
           const users = await userCollection.find().toArray();
           res.send(users);
        })
+
+    //  getAdmin  ===================================================
+       app.get('/admin/:email', async(req, res) => {
+           const email = req.params.email;
+           const result = await userCollection.findOne(email);
+           const isAdmin = result.role === "admin";
+           res.send({admin:isAdmin});
+       })
        
        
         app.put('/user/:email', async (req, res) => {
