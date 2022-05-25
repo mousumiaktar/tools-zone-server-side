@@ -43,6 +43,7 @@ async function run() {
         const orderCollection = client.db('toolShop').collection('orders');
         // user
         const userCollection = client.db('toolShop').collection('users');
+        const reviewCollection = client.db('toolShop').collection('reviews');
 
 
         // TOOL============================================
@@ -60,6 +61,8 @@ async function run() {
             const tool = await toolCollection.findOne(query)
             res.send(tool);
         })
+
+
 
 
         // ORDER=================================================
@@ -85,6 +88,13 @@ async function run() {
             res.send(result)
         });
 
+        // ORDER DELETE API-------------------
+        app.delete('/orders/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) }
+            const result = await orderCollection.deleteOne(query)
+            res.send(result)
+        })
 
 
         // user=======================================================
@@ -97,7 +107,7 @@ async function run() {
     //  getAdmin  ===================================================
        app.get('/admin/:email', async(req, res) => {
            const email = req.params.email;
-           const result = await userCollection.findOne(email);
+           const result = await userCollection.findOne({email});
            const isAdmin = result.role === "admin";
            res.send({admin:isAdmin});
        })
