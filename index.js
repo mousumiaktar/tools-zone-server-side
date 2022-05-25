@@ -62,9 +62,20 @@ async function run() {
             res.send(tool);
         })
 
+        // REVIEW
+        app.get('/reviews', async (req, res) => {
+            const review = await reviewCollection.find().toArray()
+            res.send(review)
+        })
+
+        app.post('/reviews', async (req, res) => {
+            const review = req.body;
+            const result = await reviewCollection.insertOne(review)
+            res.send(result)
+        })
 
 
-
+        
         // ORDER=================================================
          // ORDER GET-----------
         app.get('/orders', verifyJWT, async (req, res) => {
