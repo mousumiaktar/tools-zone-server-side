@@ -45,6 +45,7 @@ async function run() {
         // user
         const userCollection = client.db('toolShop').collection('users');
         const reviewCollection = client.db('toolShop').collection('reviews');
+        const paymentCollection = client.db('toolShop').collection('payments');
 
 
 
@@ -146,6 +147,21 @@ async function run() {
             const query = { _id: ObjectId(id) }
             const result = await orderCollection.deleteOne(query)
             res.send(result)
+        })
+
+        app.patch('/orders/:id', verifyJWT, async(req, res)=>{
+            const id = req.params.id;
+            const payment = req.body;
+            const filter = {_id: ObjectId(id)};
+            const updatedDoc ={
+                $set:{
+                    paid: true,
+                    transactionId: payment.transactionId,
+                }
+            }
+            const result  = await paymentCollection.insertOne(payment);
+            const updatedOrder = await orderCollection.updateOne(filter, updatedDoc);
+            res.send(updatedDoc);
         })
 
 
